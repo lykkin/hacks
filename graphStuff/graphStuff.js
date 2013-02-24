@@ -1,12 +1,12 @@
 var Graph = function(isDirected, isWeighted) {
 
   if(typeof isDirected != 'boolean'){
-    console.log('invalid directed type, defaulted to false');
+    console.warn('Invalid directed type, defaulted to false');
     isDirected = false;
   }
   
   if(typeof isWeighted != 'boolean'){
-    console.log('invalid weighted type, defaulted to false');
+    console.warn('Invalid weighted type, defaulted to false');
     isWeighted = false;
   }
   
@@ -17,22 +17,27 @@ var Graph = function(isDirected, isWeighted) {
     
     addNode:function(value, connectedTo){
       var index = this.nodes.push({value:value, connectedTo:connectedTo});
-      if(!directed){
+      if(!this.directed){
         for(edge in connectedTo){
           var node = this.nodes[edge];
-          node.edges[index] = connectedTo[edge];
+          node.connectedTo[index] = connectedTo[edge];
         }
       }
     },
     
     addEdge:function(from, to, weight){
+      if(from == to){
+        console.warn("Attempting to assign a cycle");
+        this.nodes[from].connectedTo[from] = undefined;
+        return this;
+      }
       if(this.nodes[from] == undefined){
-        console.log('error adding edge, no node ' + from);
+        console.error('Error adding edge, no node ' + from);
         return this;
       }
       
       if(this.nodes[to] == undefined){
-        console.log('error adding edge, no node ' + to);
+        console.error('Error adding edge, no node ' + to);
         return this;
       }
 
@@ -40,15 +45,15 @@ var Graph = function(isDirected, isWeighted) {
         weight = 1;
       }
       
-      if(this.nodes[from].edges[to] != undefined){
-        this.nodes[from].edges[to] = weight;
+      if(this.nodes[from].connectedTo[to] == undefined){
+        this.nodes[from].connectedTo[to] = weight;
       } else {
-        console.log('unable to add edge, already exists.');
+        console.warn('Unable to add edge, already exists.');
         return this;
       }
 
-      if(!directed){
-        this.nodes[to].edges[from] = weight;
+      if(!this.directed){
+        this.nodes[to].connectedTo[from] = weight;
       }
       return this;
       
@@ -56,43 +61,43 @@ var Graph = function(isDirected, isWeighted) {
 
     deleteEdge:function(from, to){
       if(this.nodes[from] == undefined){
-        console.log('error deleting edge, no node ' + from);
+        console.error('Error deleting edge, no node ' + from);
         return this;
       }
 
       if(this.nodes[to] == undefined){
-        console.log('error deleting edge, no node ' + to);
+        console.error('Error deleting edge, no node ' + to);
         return this;
       }
 
-      this.nodes[from].edges[to] = undefined;
+      this.nodes[from].connectedTo[to] = undefined;
       
-      if(!directed){
-        this.nodes[to].edges[from] = undefined;
+      if(!this.directed){
+        this.nodes[to].connectedTo[from] = undefined;
       }
       return this;
     },
 
     updateEdge:function(from, to, weight){
-      if(!weighted){
-        console.log("can't update unweighted graphs.");
+      if(!this.weighted){
+        console.error("Can't update weights on unweighted graphs.");
         return this;
       }
 
       if(this.nodes[from] == undefined){
-        console.log('error updating edge, no node ' + from);
+        console.error('Error updating edge, no node ' + from);
         return this;
       }
 
       if(this.nodes[to] == undefined){
-        console.log('error updating edge, no node ' + to);
+        console.error('Error updating edge, no node ' + to);
         return this;
       }
 
-      this.nodes[from].edges[to] = weight;
+      this.nodes[from].connectedTo[to] = weight;
       
-      if(!directed){
-        this.nodes[to].edges[from] = weight;
+      if(!this.directed){
+        this.nodes[to].connectedTo[from] = weight;
       }
       return this;
     },
@@ -100,9 +105,9 @@ var Graph = function(isDirected, isWeighted) {
     depthFirstMap:function(node, fn){
       fn(node);
       node.visited = true;
-      for(connectedIndex in node.edges){
+      for(connectedIndex in node.connectedTo){
         if(!this.nodes[connectedIndex].visited){
-          depthFirstMap(this.nodes[connectedIndex]);
+          this.depthFirstMap(this.nodes[connectedIndex], fn);
         }
       }
       return this;
@@ -111,14 +116,14 @@ var Graph = function(isDirected, isWeighted) {
     isConnected:function(){
       var countingGraph = this.cloneGraph();
       countingGraph.counter = 0;
-      countingGraph.depthFirstMap(countingGraph.nodes[0], function(node){
+      return countingGraph.depthFirstMap(countingGraph.nodes[0], (function(node){
         if(!node.counted){
           this.counter++;
+          node.counted = true;
         }
-        node.counted = true;
-      }).block(function(){
+      }).bind(countingGraph)).block(function(){
         return countingGraph.counter == countingGraph.nodes.length;
-        });
+      });
     },
 
     block:function(fn){
@@ -129,7 +134,7 @@ var Graph = function(isDirected, isWeighted) {
       var result = Graph(directed, weighted);
       for(var i = 0; i < n; i++){
         var edges = [];
-        for(var j = (directed ? 0 : i + 1); j < n; j++){
+        for(var j = (!directed ? 0 : i + 1); j < n; j++){
           if(i != j){
             edges[j] = (weighted ? Math.floor(Math.random() * 99 + 1) : 1);
           } else {
@@ -143,10 +148,14 @@ var Graph = function(isDirected, isWeighted) {
     
     cloneGraph: function(){
       var newGraph = Graph(this.directed, this.weighted);
-      
       for(node in this.nodes){
         var currentNode = this.nodes[node];
-        newGraph.addNode(currentNode.value, currentNode.connectedTo); 
+        newGraph.addNode(currentNode.value, []);
+      }    
+      for(node in this.nodes){
+        for(connectedIndex in this.nodes[node].connectedTo){
+          newGraph.addEdge(node, connectedIndex, this.nodes[node].connectedTo[connectedIndex]);
+        }
       }
 
       return newGraph;
@@ -156,4 +165,3 @@ var Graph = function(isDirected, isWeighted) {
  };
    
 };
-

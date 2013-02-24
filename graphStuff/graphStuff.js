@@ -16,7 +16,7 @@ var Graph = function(isDirected, isWeighted) {
     nodes:[], //nodes[index]::{value, [edges]}  edge[connectedTo]::weight
     
     addNode:function(value, connectedTo){
-      var index = this.nodes.push({this.value:value, this.connectedTo:connectedTo)});
+      var index = this.nodes.push({value:value, connectedTo:connectedTo});
       if(!directed){
         for(edge in connectedTo){
           var node = this.nodes[edge];
@@ -37,10 +37,10 @@ var Graph = function(isDirected, isWeighted) {
       }
 
       if(!this.weighted){
-        var weight = 1;
+        weight = 1;
       }
       
-      if(this.nodes[from].edges[to] != undefined)
+      if(this.nodes[from].edges[to] != undefined){
         this.nodes[from].edges[to] = weight;
       } else {
         console.log('unable to add edge, already exists.');
@@ -94,6 +94,7 @@ var Graph = function(isDirected, isWeighted) {
       if(!directed){
         this.nodes[to].edges[from] = weight;
       }
+      return this;
     },
 
     depthFirstMap:function(node, fn){
@@ -134,7 +135,7 @@ var Graph = function(isDirected, isWeighted) {
         var edges = [];
         for(var j = (this.directed ? 0 : i + 1); j < n; j++){
           if(i != j){
-            edges[j] = (weighted ? Math.floor(Math.random() * 99 + 1) : 1;
+            edges[j] = (weighted ? Math.floor(Math.random() * 99 + 1) : 1);
           } else {
             edges[j] = undefined;
           }
@@ -156,7 +157,7 @@ var Graph = function(isDirected, isWeighted) {
      
     }
     
- }
+ };
    
-}
+};
 

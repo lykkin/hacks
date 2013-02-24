@@ -126,10 +126,6 @@ var Graph = function(isDirected, isWeighted) {
     },
     
     createCompleteNGraph: function(n, directed, weighted){
-      if(!weighted) { 
-        directed = false;
-      }
-
       var result = Graph(directed, weighted);
       for(var i = 0; i < n; i++){
         var edges = [];

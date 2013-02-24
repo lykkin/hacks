@@ -129,7 +129,7 @@ var Graph = function(isDirected, isWeighted) {
       var result = Graph(directed, weighted);
       for(var i = 0; i < n; i++){
         var edges = [];
-        for(var j = (this.directed ? 0 : i + 1); j < n; j++){
+        for(var j = (directed ? 0 : i + 1); j < n; j++){
           if(i != j){
             edges[j] = (weighted ? Math.floor(Math.random() * 99 + 1) : 1);
           } else {

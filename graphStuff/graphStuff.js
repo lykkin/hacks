@@ -26,8 +26,8 @@ var Graph = function(isDirected, isWeighted) {
     },
     
     addEdge:function(from, to, weight){
-      if(from == to){
-        console.warn("Attempting to assign a cycle");
+      if(from == to && weight != undefined){
+        console.warn("Attempting to assign a loop");
         this.nodes[from].connectedTo[from] = undefined;
         return this;
       }
@@ -41,7 +41,7 @@ var Graph = function(isDirected, isWeighted) {
         return this;
       }
 
-      if(!this.weighted){
+      if(!this.weighted && weight != undefined){
         weight = 1;
       }
       
@@ -106,7 +106,7 @@ var Graph = function(isDirected, isWeighted) {
       fn(node);
       node.visited = true;
       for(connectedIndex in node.connectedTo){
-        if(!this.nodes[connectedIndex].visited){
+        if(node.connectedTo[connectedIndex] != undefined && !this.nodes[connectedIndex].visited){
           this.depthFirstMap(this.nodes[connectedIndex], fn);
         }
       }
@@ -151,10 +151,10 @@ var Graph = function(isDirected, isWeighted) {
       for(node in this.nodes){
         var currentNode = this.nodes[node];
         newGraph.addNode(currentNode.value, []);
-      }    
-      for(node in this.nodes){
         for(connectedIndex in this.nodes[node].connectedTo){
-          newGraph.addEdge(node, connectedIndex, this.nodes[node].connectedTo[connectedIndex]);
+          if(this.nodes[node].connectedTo[connectedIndex] == undefined){
+            newGraph.addEdge(node, connectedIndex, this.nodes[node].connectedTo[connectedIndex]);
+          }
         }
       }
 

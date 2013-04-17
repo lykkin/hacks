@@ -1,0 +1,12 @@
+Euler's theorem:
+
+Given gcd(a, m) = 1, prove a^phi(m) = 1 (mod m):
+
+Take L to be {x_1, x_2, x_3,...,x_phi(m)}, the set of all positive integers coprime to m that are less than m.
+We know by definition card(L) = phi(m), a is an element of L, and all elements of L have inverses.
+Take the list a*x_i, we know each of these terms are unique due to the following:
+If we have a*x_j = a*x_k mod m => (a^-1 * a) x_j = x_k mod m => x_j = x_k mod m.
+Thus we have the map f(x) = a*x is a permutation over L and we have 
+a*x_1 * a*x_2 * ... * a*x_phi(m) = x_1 * x_2 * ... * x_phi(m) = a^(phi(m))(x_1 * x_2 * ... * x_phi(m)) mod m
+Since we have something of the form e*x = x mod m, we have found that e is the identity element in L.
+More specifically, e = a^(phi(m)) = 1 mod m.

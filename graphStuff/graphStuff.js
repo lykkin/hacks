@@ -114,16 +114,12 @@ var Graph = function(isDirected, isWeighted) {
     },
 
     isConnected:function(){
-      var countingGraph = this.cloneGraph();
-      countingGraph.counter = 0;
-      return countingGraph.depthFirstMap(countingGraph.nodes[0], (function(node){
-        if(!node.counted){
-          this.counter++;
-          node.counted = true;
-        }
-      }).bind(countingGraph)).block(function(){
-        return countingGraph.counter == countingGraph.nodes.length;
-      });
+      node = this.nodes[0];
+      this.visited;
+      this.counter++;
+      for(connectedIndex in this.nodes[node].connectedTo){
+        
+      }
     },
 
     block:function(fn){

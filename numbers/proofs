@@ -10,3 +10,30 @@ Thus we have the map f(x) = a*x is a permutation over L and we have
 a*x_1 * a*x_2 * ... * a*x_phi(m) = x_1 * x_2 * ... * x_phi(m) = a^(phi(m))(x_1 * x_2 * ... * x_phi(m)) mod m
 Since we have something of the form e*x = x mod m, we have found that e is the identity element in L.
 More specifically, e = a^(phi(m)) = 1 mod m.
+
+
+
+computations for problem 1
+finding a:
+k = 2;
+a = 1;
+while(k !== 974){k *= 2; a++; k %= 1373}
+
+finding B:
+k = 2;for(var i = 1; i < 871; i++){k*=2;k%=1373}
+B = 805
+
+finding shared secret:
+using modulo exponents:
+a == 587
+b == 871
+b*a mod 1372 = 893
+g^893 = 397
+
+using straight forward approach:
+A ^ b = 397
+k=974;for(var i = 1; i < 871; i++){k*=974;k%=1373}
+397
+
+They agree!
+

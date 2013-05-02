@@ -1,4 +1,7 @@
 function gcd(x, y, co){
+  if(co == undefined){
+    co = [[1,0],[0,1]];
+  }
   if(x%y == 0){
     return {gcd:y, coefficients:co[1]}
   } else {
@@ -39,4 +42,13 @@ function phi (k){
     return k-1;
   }
   return result * product;
+}
+
+function binary(n){
+  var result = [];
+  while(n != 0){
+    result.push(n%2);
+    n = Math.floor(n/2);
+  }
+  return result.reverse().join('');
 }

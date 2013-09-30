@@ -38,7 +38,7 @@ function phi (k){
       product *= primes[i] - 1;
     }
   }
-  if(product == 1){
+  if(result == k){
     return k-1;
   }
   return result * product;

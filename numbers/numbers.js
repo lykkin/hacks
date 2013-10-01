@@ -29,7 +29,7 @@ function primesTo(k){
 }
 
 function phi (k){
-  var primes = primesTo(Math.ceil(Math.sqrt(k)));
+  var primes = primesTo(Math.ceil(k/2));
   var result = k;
   var product = 1;
   for(var i = 0; i < primes.length; i++){
